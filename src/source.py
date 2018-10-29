@@ -11,10 +11,8 @@ def selenium_utils():
     browser.implicitly_wait(10)  # wait
     time.sleep(2)
 
-
     while True:
         try:
-            url_audio_list = [[]]
             play_element = browser.find_elements_by_xpath(
                 "//div[contains(@class, 'primary-button') and contains(@class, 'play')]"
             )
@@ -33,19 +31,23 @@ def selenium_utils():
                     wget.download(audio_url, "../data/" + str(value).zfill(2) + ".mp3")
                     value += 1
 
-                    # fetch text
-                    transcript = browser.find_element_by_xpath(
-                        '//*[@id="root"]/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[1]/div'
-                        '//*[@id="root"]/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div'
-                        '//*[@id="root"]/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[3]/div'
-                        '//*[@id="root"]/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[4]/div'
-                        '//*[@id="root"]/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[1]/div'
+                    transcript_xPath_list = []
+
+                    for index in range(1,5,1):
+                        value = 0
+                        transcript_xPath_generic ='//*[@id="root"]/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div['+str(index)+']/div'
+                        print(index)
+                        transcript_xPath_list.append(transcript_xPath_generic)
+
+                        # fetch text
+                        element = browser.find_element_by_xpath(
+                            transcript_xPath_list[value]
+
+                        ).get_attribute("innerHTML")
+                        print(element)
+                        value += 1
 
 
-                    ).get_attribute("innerHTML")
-
-                    print("Transcript : " + transcript)
-                    print("URL : " + audio_url)
 
                 # if state is stop then wait for playback ends.
                 elif "stop" in play_element[x].get_attribute('innerHTML'):  # Ara kontrol
@@ -62,6 +64,7 @@ def selenium_utils():
 
         except Exception as ex:
             print(ex)
+
 
 selenium_utils()
 browser.close()
